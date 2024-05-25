@@ -1,0 +1,33 @@
+version: '3.7'
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml
+    # Ajout de la configuration de scrape_configs ici
+    command: 
+      - '--config.file=/etc/prometheus/prometheus.yml'
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3080:3000"
+    restart: unless-stopped
+    volumes:
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+
+# Déplacement de la configuration de scrape_configs dans le service Prometheus
+# pour corriger l'erreur "services.scrape_configs must be a mapping"
+#  scrape_configs:
+#    - job_name: 'MyAppMetrics'
+#      metrics_path: '/actuator/prometheus'
+#      scrape_interval: 3s
+#      static_configs:
+#        - targets: ['host.docker.internal:3000']
+#          labels:
+#            application: 'My Application'

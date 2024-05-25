@@ -1,5 +1,7 @@
-const Examen= require('../model/examenModel');
-const Classe  = require('../model/classeModel');
+const Examen = require('../model/examenModel');
+const Classe = require('../model/classeModel');
+
+
 const { Op } = require('sequelize');
 
 // Fonction pour ouvrir automatiquement les examens en fonction de l'heure actuelle
@@ -36,27 +38,44 @@ const fermerExamensAutomatiquement = async () => {
   }
 };
 
-// Contrôleur pour créer un nouvel examen en passant le nom de la classe
 const createExamen = async (req, res) => {
-  const { id_classe, ...examenData } = req.body; // On récupère id_classe et le reste des données
   try {
-    // On vérifie si l'ID de la classe est valide
-    const classe = await Classe.findByPk(id_classe);
-    if (!classe) {
-      return res.status(404).json({ message: 'Classe non trouvée.' });
+    const { id_classe, ...examenData } = req.body;
+
+    if (!id_classe) {
+      return res.status(400).json({ message: "Veuillez fournir l'identifiant de la Classe pour l'examen." });
     }
 
-    // On crée l'examen avec les données correctes
+    // Check if the Class exists
+    const classe = await Classe.findByPk(id_classe);
+    if (!classe) {
+      return res.status(400).json({ message: "La Classe spécifiée n'existe pas." });
+    }
+
+    if (![60, 90].includes(examenData.duree)) {
+      return res.status(400).json({ message: "La durée doit être de 60 minutes ou 90 minutes." });
+    }
+
+    const dateDebut = new Date(examenData.date_debut);
+    const dateFin = new Date(examenData.date_fin);
+    const currentDate = new Date();
+
+    if (dateDebut <= currentDate) {
+      return res.status(400).json({ message: "La date de début de l'examen ne peut pas être dans le passé." });
+    }
+
+    if (dateFin <= dateDebut) {
+      return res.status(400).json({ message: "La date de fin doit être postérieure à la date de début." });
+    }
+
+    // Create the exam with id_classe
     const nouvelExamen = await Examen.create({
       titre: examenData.titre,
-      description: examenData.description,
       date_debut: examenData.date_debut,
       date_fin: examenData.date_fin,
       duree: examenData.duree,
       type_examen: examenData.type_examen,
-      heure: examenData.heure,
-      id_classe: id_classe, // On utilise l'ID de la classe fourni
-      nom_classe: classe.nom // On ajoute le nom de la classe aux données de l'examen
+      id_classe: id_classe, // Set the id_classe field
     });
 
     res.status(201).json(nouvelExamen);
@@ -66,21 +85,36 @@ const createExamen = async (req, res) => {
 };
 
 
+
+
+
+
+
+
+
+
 // Contrôleur pour obtenir tous les examens
+// const getExamens = async (req, res) => {
+//   try {
+//     // Appel des fonctions pour ouvrir et fermer les examens automatiquement
+//     await ouvrirExamensAutomatiquement();
+//     await fermerExamensAutomatiquement();
+
+//     // Récupération de tous les examens avec le nom de la classe associée
+//     const examens = await Examen.findAll({ include: Classe });
+//     res.status(200).json(examens);
+//   } catch (error) {
+//     res.status(500).json({ message: 'Erreur lors de la récupération des examens.' });
+//   }
+// };
 const getExamens = async (req, res) => {
   try {
-    // Appel des fonctions pour ouvrir et fermer les examens automatiquement
-    await ouvrirExamensAutomatiquement();
-    await fermerExamensAutomatiquement();
-
-    // Récupération de tous les examens avec le nom de la classe associée
-    const examens = await Examen.findAll({ include: Classe });
+    const examens = await Examen.findAll();
     res.status(200).json(examens);
   } catch (error) {
     res.status(500).json({ message: 'Erreur lors de la récupération des examens.' });
   }
 };
-
 // Contrôleur pour obtenir un examen par son ID
 const getExamenById = async (req, res) => {
   const { id } = req.params;
@@ -127,7 +161,7 @@ const deleteExamen = async (req, res) => {
 };
 
 module.exports = {
-  createExamen,
+  createExamen ,
   getExamens,
   getExamenById,
   updateExamen,

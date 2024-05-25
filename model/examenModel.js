@@ -15,10 +15,6 @@ const Examen = sequelize.define('examen', {
     type: DataTypes.STRING(255),
     allowNull: false,
   },
-  description: {
-    type: DataTypes.STRING(255),
-    allowNull: true,
-  },
   date_debut: {
     type: DataTypes.DATE,
     allowNull: false,
@@ -27,10 +23,7 @@ const Examen = sequelize.define('examen', {
     type: DataTypes.DATE,
     allowNull: false,
   },
-  heure: {
-    type: DataTypes.TIME,
-    allowNull: false,
-  },
+
   type_examen: {
     type: DataTypes.ENUM('synthese', 'controle'),
     allowNull: false,
@@ -43,7 +36,11 @@ const Examen = sequelize.define('examen', {
     type: DataTypes.INTEGER, // Change to INTEGER for compatibility with the Classes table
     allowNull: false,
   },
+
 });
+
 Examen.belongsTo(Classe, { foreignKey: 'id_classe', as: 'Classes' });
+
+
 
 module.exports = Examen;

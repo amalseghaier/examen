@@ -4,17 +4,26 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "sonar": "sonar-scanner"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "mysql2": "^3.9.3",
+    "mysql2": "^3.9.7",
     "nodemon": "^3.1.0",
     "pdfkit": "^0.15.0",
-    "sequelize": "^6.37.1"
+    "prom-client": "^15.1.2",
+    "sequelize": "^6.37.3"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "sequelize-mock": "^0.10.2",
+    "sonarqube-scanner": "^3.5.0",
+    "supertest": "^7.0.0"
   }
 }
