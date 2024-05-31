@@ -11,7 +11,7 @@ services:
     # Ajout de la configuration de scrape_configs ici
     command: 
       - '--config.file=/etc/prometheus/prometheus.yml'
-
+cd
   grafana:
     image: grafana/grafana:latest
     container_name: grafana

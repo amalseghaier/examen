@@ -2,5 +2,5 @@ projectKey=microservice_examen
 serverUrl=http://localhost:9000
 serverVersion=10.5.1.90531
 dashboardUrl=http://localhost:9000/dashboard?id=microservice_examen
-ceTaskId=04aa5935-6074-47ff-b08c-d63b29ddef08
-ceTaskUrl=http://localhost:9000/api/ce/task?id=04aa5935-6074-47ff-b08c-d63b29ddef08
+ceTaskId=43868cf0-1d1b-45a6-b514-4ee7ff44ad3b
+ceTaskUrl=http://localhost:9000/api/ce/task?id=43868cf0-1d1b-45a6-b514-4ee7ff44ad3b

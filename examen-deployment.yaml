@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: examen-deployment
+  namespace: examen
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: examen
+  template:
+    metadata:
+      labels:
+        app: examen
+    spec:
+      containers:
+        - name: examen
+          image: amalseghaier/examenservice:latest
+          ports:
+            - containerPort: 3012
+          env:
+            - name: DATABASE_HOST
+              value: "mysql"  # Change this to the name of your MySQL service
+            - name: DATABASE_PORT
+              value: "3306"
+            - name: DATABASE_USER
+              value: "root"
+            - name: DATABASE_PASSWORD
+              value: "mysqlserver"
+            - name: DATABASE_NAME
+              value: "examen"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service
+  namespace: examen
+spec:
+  selector:
+    app: examen
+  ports:
+    - protocol: TCP
+      port: 3012
+      targetPort: 3012
+  type: LoadBalancer
