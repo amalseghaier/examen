@@ -1,33 +1,46 @@
-version: '3.7'
+version: "3.8"
 
 services:
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus
-    ports:
-      - "9090:9090"
+  nodejs-api:
+    image: examen
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: container_examen
+    depends_on:
+      - mysql-service
     volumes:
-      - ./prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml
-    # Ajout de la configuration de scrape_configs ici
-    command: 
-      - '--config.file=/etc/prometheus/prometheus.yml'
-cd
-  grafana:
-    image: grafana/grafana:latest
-    container_name: grafana
+      - .:/usr/src/app
     ports:
-      - "3080:3000"
-    restart: unless-stopped
-    volumes:
-      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - "3020:3019"
+    networks:
+      - service_examen_gestion_examen_default
+    environment:
+      DB_HOST: mysql-service
+      DB_USER: root
+      DB_PASSWORD: mysqlserver
+      DB_PORT: 3306
+      DB_DATABASE: examen
+      APP_PORT: 3019
 
-# Déplacement de la configuration de scrape_configs dans le service Prometheus
-# pour corriger l'erreur "services.scrape_configs must be a mapping"
-#  scrape_configs:
-#    - job_name: 'MyAppMetrics'
-#      metrics_path: '/actuator/prometheus'
-#      scrape_interval: 3s
-#      static_configs:
-#        - targets: ['host.docker.internal:3000']
-#          labels:
-#            application: 'My Application'
+  mysql-service:
+    image: mysql
+    container_name: mysql-service-container-examen
+    restart: always
+    environment:
+      MYSQL_DATABASE: examen
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: mysqlserver
+    command: --init-file /docker-entrypoint-initdb.d/init.sql
+    networks:
+      - service_examen_gestion_examen_default
+    volumes:
+      - service_examen_gestion_examen_default:/data/db
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+networks:
+  service_examen_gestion_examen_default:
+    driver: bridge
+
+volumes:
+  service_examen_gestion_examen_default:

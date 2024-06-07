@@ -7,7 +7,7 @@ const sequelize = require('./model/examenModel');
 const examenRoutes = require('./route/examenRoute');
 
 const app = express();
-const PORT = process.env.PORT || 3012;
+const PORT = process.env.PORT || 3019;
 
 app.use(bodyParser.json());
 

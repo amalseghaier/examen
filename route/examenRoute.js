@@ -8,9 +8,10 @@ const utilisateur = require ('../model/userModel')
 
 
 // Routes protégées pour les enseignants
-router.post('/examens', verifyToken, examenController.createExamen);
-router.put('/examens/:id', verifyToken, examenController.updateExamen);
-router.delete('/examens/:id', verifyToken, examenController.deleteExamen);
-router.get('/examen', verifyToken, examenController.getExamens); // Endpoint pour obtenir tous les examens
+router.post('/examens', examenController.createExamen);
+router.put('/examens/:id',  examenController.updateExamen);
+router.delete('/examens/:id', examenController.deleteExamen);
+router.get('/examen', examenController.getExamens); // Endpoint pour obtenir tous les examens
 
 module.exports = router;
+
