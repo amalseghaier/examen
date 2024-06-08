@@ -26,7 +26,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                bat 'npm run build'
+                bat 'npm run build'  // This runs the build script defined in package.json
             }
         }
 
@@ -34,7 +34,7 @@ pipeline {
             steps {
                 script {
                     withSonarQubeEnv('SonarQube Test') {
-                        bat 'npm run sonarqube'
+                        bat 'npm run sonarqube'  // Make sure this script is defined in package.json
                     }
                 }
             }
@@ -60,7 +60,8 @@ pipeline {
                 }
             }
         }
-        stage('kubernetes Deployment') {
+
+        stage('Kubernetes Deployment') {
             steps {
                 script {
                    bat 'kubectl apply -f examen-deployment.yaml' 
