@@ -6,7 +6,7 @@ pipeline {
         PATH = "${DOCKER_PATH}:${PATH}"
        
         NODEJS_PATH = "C:\\Programmes (x86)\\nodejs"
-        SONAR_SCANNER_HOME = "C:\\Program Files\\sonar-scanner-5.0.1.3006-windows"
+        SONAR_SCANNER_HOME = C:\sonarqube\sonarqube-10.5.1.90531\bin\windows-x86-64"
     }
 
     stages {
@@ -28,7 +28,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('sonarquabe') {
-                    bat '"C:\\Program Files\\sonar-scanner-5.0.1.3006-windows\\bin\\sonar-scanner" -Dsonar.projectKey=microservice_examen'
+                    bat '"C:\sonarqube\sonarqube-10.5.1.90531\bin\windows-x86-64\\sonar-scanner" -Dsonar.projectKey=microservice_examen'
                 }
             }
         }
