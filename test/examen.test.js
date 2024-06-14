@@ -11,41 +11,39 @@ const app = express();
 app.use(bodyParser.json());
 app.use('/examen', examenRoutes);
 
-
 describe('Examen API', () => {
   it('should create a new exam', async () => {
     const res = await request(app)
       .post('/examen/examens')
       .send({
         id_classe: 27,
-        titre: 'securite',
-        date_debut: '2024-06-05T08:00:00Z',
-        date_fin: '2024-06-05T09:30:00Z',
-        duree: 90,
-        type_examen: 'synthese',
+        titre: 'Cloud Security',
+        date_debut: '2024-07-05T08:00:00Z',
+        date_fin: '2024-07-05T09:00:00Z',
+        duree: 60,
+        type_examen: 'controle',
       });
 
-    expect(res.statusCode).toEqual(201);
-    expect(res.body).toHaveProperty('titre', 'securite'); // Check if response contains expected exam data
+    expect(res.statusCode).toEqual(201); // Assurez-vous que le statut est correct
+    expect(res.body).toHaveProperty('titre', 'Cloud Security'); // Vérifiez les données de réponse
   });
 
   it('should return an error for invalid exam data', async () => {
     const res = await request(app)
       .post('/examen/examens')
       .send({
-        id_classe: '', // This should have a valid or invalid value, not empty
-        date_debut: '2024-06-01T08:00:00Z',
-        date_fin: '2024-06-01T09:00:00Z',
-        duree: 55,
+        id_classe: '', // Valeur invalide pour provoquer une erreur
+        date_debut: '2024-07-01T08:00:00Z',
+        date_fin: '2024-07-01T09:00:00Z',
+        duree: 45,
         titre: '',
-        type_examen: 'synthese',
+        type_examen: 'controle',
       });
 
-    expect(res.statusCode).toEqual(400);
-    expect(res.body).toHaveProperty('message');
+    expect(res.statusCode).toEqual(400); // Assurez-vous que le statut est correct pour les données invalides
+    expect(res.body).toHaveProperty('message'); // Vérifiez la présence d'un message d'erreur dans la réponse
   });
 });
-
 
   describe('GET /examen', () => {
     it('should get all exams', async () => {
@@ -59,8 +57,8 @@ describe('Examen API', () => {
     it('should get an exam by ID', async () => {
       const examen = await Examen.create({
         titre: 'Test examen',
-        date_debut: '2024-06-01T08:00:00Z',
-        date_fin: '2024-06-01T09:30:00Z',
+        date_debut: '2024-07-01T08:00:00Z',
+        date_fin: '2024-07-01T09:30:00Z',
         duree: 90,
         type_examen: 'synthese',
         id_classe: 28,

@@ -18,7 +18,7 @@ spec:
         image: mysql:latest
         env:
         - name: MYSQL_ROOT_PASSWORD
-          value: "root"
+          value: "mysqlserver"
         - name: MYSQL_ALLOW_EMPTY_PASSWORD
           value: "mysqlserver"
         - name: MYSQL_DATABASE
