@@ -2,61 +2,81 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_PATH = "C:\\Programmes\\Docker\\cli-plugins"
-        PATH = "${DOCKER_PATH}:${PATH}"
-       
-        NODEJS_PATH = "C:\\Programmes (x86)\\nodejs"
-        SONAR_SCANNER_HOME = C:\sonarqube\sonarqube-10.5.1.90531\bin\windows-x86-64"
+        NODEJS_HOME = tool name: 'NODEJS', type: 'jenkins.plugins.nodejs.tools.NodeJSInstallation'
+        PATH = "${env.NODEJS_HOME}/bin:${env.PATH}"
+        CHROME_BIN = '/usr/bin/google-chrome'
+        DOCKER_HUB_REGISTRY = 'docker.io'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                script {
-                    checkout scm
-                }
+                checkout scm
             }
         }
-        stage('Install Dependencies and Run Tests') {
+
+        stage('Install dependencies') {
             steps {
                 script {
                     bat 'npm install'
-                    //bat 'npm test --detectOpenHandles'
+                    bat 'npm install node-pre-gyp'
                 }
             }
         }
+
+        stage('Build') {
+            steps {
+                bat 'npm run build'  // This runs the build script defined in package.json
+            }
+        }
+
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('sonarquabe') {
-                    bat '"C:\sonarqube\sonarqube-10.5.1.90531\bin\windows-x86-64\\sonar-scanner" -Dsonar.projectKey=microservice_examen'
-                }
-            }
-        }
-        stage('Build Docker Image') {
-            steps {
                 script {
-                    // Construire l'image Docker avec élévation de privilèges
-                    bat 'docker build -t amalseghaier/micro-examen:latest:%BUILD_ID% .'
-                }
-            }
-        }
-        stage('Tag Docker Image') {
-            steps {
-                script {
-                    bat "docker tag amalseghaier/micro-examen:%BUILD_ID% amalseghaier/micro-examen:latest"
-                }
-            }
-        }
-        stage('Publish Docker Image') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
-                        bat 'docker login -u %DOCKERHUB_USERNAME% -p %DOCKERHUB_PASSWORD%'
-                        bat 'docker push amalseghaier/micro-examen:%BUILD_ID%'
-                        bat 'docker push amalseghaier/micro-examen:latest'
+                    withSonarQubeEnv('SonarQube Test') {
+                        bat 'npm run sonarqube'  // Make sure this script is defined in package.json
                     }
                 }
             }
+        }
+
+        stage('Build Docker image') {
+            steps {
+                script {
+                    bat 'docker build --no-cache -t examen_kubernetes:latest -f Dockerfile .'
+                    bat 'docker tag examen_kubernetes:latest amalseghaier/examen_kubernetes:latest'
+                }
+            }
+        }
+
+        stage('Deploy Docker image') {
+            steps {
+                script {
+                    withCredentials([string(credentialsId: 'docker-hub-token', variable: 'DOCKER_TOKEN')]) {
+                        docker.withRegistry('https://index.docker.io/v1/', '12') {
+                            bat "docker image push amalseghaier/examen_kubernetes:latest"
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Kubernetes Deployment') {
+            steps {
+                script {
+                   bat 'kubectl apply -f examen-deployment.yaml' 
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Build succeeded!'
+        }
+
+        failure {
+            echo 'Build failed!'
         }
     }
 }
