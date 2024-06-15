@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "sonar": "sonar-scanner",
+    "sonarqube": "sonar-scanner",
     "build": "echo 'No build necessary for this project'"
   },
   "author": "",

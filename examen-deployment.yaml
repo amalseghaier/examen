@@ -15,9 +15,9 @@ spec:
     spec:
       containers:
         - name: backend
-          image: amalseghaier/kubernetes:latest    
+          image: amalseghaier/exam-kubernetes:latest    
           ports:
-            - containerPort: 3999
+            - containerPort: 3990
 
 ---
 apiVersion: v1
@@ -30,6 +30,6 @@ spec:
     app: backend
   ports:
     - protocol: TCP
-      port: 3999
-      targetPort: 3999
+      port: 3990
+      targetPort: 3990
   type: LoadBalancer

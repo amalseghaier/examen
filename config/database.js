@@ -9,8 +9,7 @@ const dbConfig = {
   connectionLimit: 10,
   queueLimit: 0,
 }
-// Get JWT secret key from environment variables
-const jwtSecret = process.env.JWT_SECRET;
+
 
 // Create a MySQL pool with promise support
 const pool = mysql.createPool(dbConfig);
