@@ -47,16 +47,16 @@ stages {
     }
 
     stage('Deploy Docker image') {
-        steps {
-            script {
-                withCredentials([string(credentialsId: 'dockerHubeToken', variable: 'DOCKER_TOKEN')]) {
-                    docker.withRegistry('https://index.docker.io/v1/', '12') {
-                        bat "docker image push amalseghaier/examen_kubernetes:latest"
-                    }
+    steps {
+        script {
+            withCredentials([string(credentialsId: 'dockerHubToken', variable: 'DOCKER_TOKEN')]) {
+                docker.withRegistry('https://index.docker.io/v1/', 'dockerHubToken') {
+                    bat "docker push amalseghaier/examen_kubernetes:latest"
                 }
             }
         }
     }
+}
 
     stage('Kubernetes Deployment') {
         steps {
