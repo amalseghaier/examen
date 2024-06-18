@@ -33,7 +33,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    withSonarQubeEnv('Sonarqube') {
+                    withSonarQubeEnv('sonarqube') {
                         bat 'npm run sonarqube'  // Make sure this script is defined in package.json
                     }
                 }
