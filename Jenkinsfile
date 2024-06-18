@@ -22,7 +22,7 @@ pipeline {
                 script {
                     withCredentials([string(credentialsId: 'dockerHubToken', variable: 'DOCKER_TOKEN')]) {
                         docker.withRegistry('https://index.docker.io/v1/', 'dockerHubToken') {
-                            bat "docker push amalseghaier/examen_kubernetes:latest"
+                            bat "docker image push amalseghaier/examen_kubernetes:latest"
                         }
                     }
                 }
