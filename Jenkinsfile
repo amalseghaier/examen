@@ -49,18 +49,17 @@ pipeline {
             }
         }
 
-        stage('Deploy Docker image') {
+        stage('Publish Docker Image') {
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'dockerHubeToken', variable: 'DOCKER_TOKEN')]) {
-                        docker.withRegistry('https://index.docker.io/v1/', '12') {
-                            bat "docker image push amalseghaier/examen_kubernetes:latest"
-                        }
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+                        bat 'docker login -u %DOCKERHUB_USERNAME% -p %DOCKERHUB_PASSWORD%'
+                        bat 'docker push amalseghaier/examen_kubernete:%BUILD_ID%'
+                        bat 'docker push amalseghaier/examen_kubernetes:latest'
                     }
                 }
             }
         }
-
         stage('Kubernetes Deployment') {
             steps {
                 script {
