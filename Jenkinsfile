@@ -4,7 +4,6 @@ pipeline {
     environment {
         NODEJS_HOME = tool name: 'NODEJS', type: 'jenkins.plugins.nodejs.tools.NodeJSInstallation'
         PATH = "${env.NODEJS_HOME}/bin:${env.PATH}"
-        CHROME_BIN = '/usr/bin/google-chrome'
         DOCKER_HUB_REGISTRY = 'docker.io'
     }
 
